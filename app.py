@@ -1,9 +1,18 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+from functools import wraps
+
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'user' not in session or session.get('role') != 'admin':
+            return redirect('/dashboard')
+        return f(*args, **kwargs)
+    return wrapper
 
 app = Flask(__name__)
-app.secret_key = "secure-secret-key"
+app.secret_key = "a8f7sd9f87sd9f87sd9f87sdf"
 
 
 def get_db():
@@ -33,31 +42,89 @@ def init_db():
         )
     ''')
 
-    db.commit()
+    db.commit() 
 
-
+#get
 @app.route('/')
 def home():
     return redirect('/login')
+
+from flask import jsonify
+
+@app.route('/api/students', methods=['GET'])
+def api_get_students():
+    db = get_db()
+    students = db.execute("SELECT * FROM students").fetchall()
+
+    return jsonify([dict(row) for row in students])
+
+#post
+@app.route('/api/students', methods=['POST'])
+def api_add_student():   
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Admin only"}), 403
+    data = request.get_json()
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO students (name, email) VALUES (?, ?)",
+        (data['name'], data['email'])
+    )
+    db.commit()
+
+    return jsonify({"message": "Student added"})
+
+#put
+@app.route('/api/students/<int:id>', methods=['PUT'])
+def api_update_student(id):
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Admin only"}), 403
+    data = request.get_json()
+
+    db = get_db()
+    db.execute(
+        "UPDATE students SET name=?, email=? WHERE id=?",
+        (data['name'], data['email'], id)
+    )
+    db.commit()
+
+    return jsonify({"message": "Updated"})
+
+#delete
+@app.route('/api/students/<int:id>', methods=['DELETE'])
+def api_delete_student(id):
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Admin only"}), 403
+    db = get_db()
+    db.execute("DELETE FROM students WHERE id=?", (id,))
+    db.commit()
+
+    return jsonify({"message": "Deleted"})
 
 
 # ---------------- AUTH ---------------- #
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    error = None
+
     if request.method == 'POST':
         username = request.form['username']
         password = generate_password_hash(request.form['password'])
 
         db = get_db()
         try:
-            db.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            db.execute(
+                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                (username, password, 'user')   # default role
+            )
             db.commit()
             return redirect('/login')
-        except:
-           error = "Username already exists ❌"
 
-        return render_template('register.html', error=error)
+        except:
+            error = "Username already exists ❌"
+
+    return render_template('register.html', error=error)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -76,11 +143,20 @@ def login():
 
         if user and check_password_hash(user['password'], password):
             session['user'] = user['username']
+            session['role'] = user['role']
             return redirect('/dashboard')
         else:
             error = "Invalid username or password ❌"
 
     return render_template('login.html', error=error)
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    db = get_db()
+    users = db.execute("SELECT id, username, role FROM users").fetchall()
+
+    return render_template('admin.html', users=users)
 
 
 @app.route('/logout')
@@ -116,6 +192,7 @@ def students():
 
 
 @app.route('/add', methods=['GET', 'POST'])
+@admin_required
 def add_student():
     if 'user' not in session:
         return redirect('/login')
@@ -134,6 +211,7 @@ def add_student():
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@admin_required
 def edit_student(id):
     if 'user' not in session:
         return redirect('/login')
@@ -155,6 +233,7 @@ def edit_student(id):
 
 
 @app.route('/delete/<int:id>')
+@admin_required
 def delete_student(id):
     if 'user' not in session:
         return redirect('/login')

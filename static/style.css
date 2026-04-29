@@ -509,3 +509,15 @@ tr:hover {
     margin-bottom: 10px;
     font-size: 14px;
 }
+/* highlight active sidebar link */
+.sidebar a.active {
+    background: #2563eb;
+    color: white;
+}
+
+/* empty state */
+.empty {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+}
