@@ -12,7 +12,8 @@ def admin_required(f):
     return wrapper
 
 app = Flask(__name__)
-app.secret_key = "a8f7sd9f87sd9f87sd9f87sdf"
+import os
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
 
 
 def get_db():
@@ -247,4 +248,4 @@ def delete_student(id):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    app.run(debug=False)
