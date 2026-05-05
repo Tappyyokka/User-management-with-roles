@@ -1,68 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Dashboard</title>
-
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<div class="app">
+<body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2 class="logo">MyApp</h2>
+<div class="top-bar">
+    <h3>Web app</h3>
 
-        <a href="{{ url_for('dashboard') }}" class="active">🏠 Dashboard</a>
-        <a href="{{ url_for('students') }}">📋 Students</a>
-        {% if session.get('role') == 'admin' %}
-        <a href="{{ url_for('add_student') }}">➕ Add Student</a>
-        {% endif %}
-        <a href="{{ url_for('logout') }}" class="logout">🚪 Logout</a>
-    </div>
+    <div></div>
 
-    <!-- MAIN -->
-    <div class="main">
+    <div class="nav-right">
 
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <h3>Dashboard</h3>
+        <!-- PROFILE -->
+        <div class="profile" onclick="toggleDropdown()">
+            {{ session['user'][0]|upper }}
         </div>
 
-        <!-- CONTENT -->
-        <div class="content">
+        <!-- DROPDOWN -->
+        <div id="dropdown" class="dropdown hidden">
+            <p class="username">{{ session['user'] }}</p>
+            <p class="role">{{ session['role'] }}</p>
 
-            <h2>Welcome, {{ user }} 👋</h2>
+            <hr>
 
-            <!-- STATS -->
-            <div class="cards">
+            <a href="#">⚙️ Settings</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
 
-                <div class="card">
-                    <h3>Total Students</h3>
-                    <p>{{ total_students }}</p>
-                </div>
+    </div>
 
-                <div class="card">
-                    <h3>Quick Action</h3>
-                    <p>Add or manage students easily</p>
-                </div>
+</div>
 
+<div class="main-wrapper">
+
+    <h1>Welcome back, {{ user }} 👋</h1>
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+            <h3>Total Students</h3>
+            <p>{{ total_students }}</p>
+        </div>
+
+        <div class="card">
+            <h3>System Status</h3>
+            <p>Running smoothly</p>
+        </div>
+
+        <div class="card wide">
+            <h3>Quick Actions</h3>
+            <div class="actions">
+                <a href="{{ url_for('students') }}" class="btn">View Students</a>
+
+                {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('add_student') }}" class="btn green">Add Student</a>
+                {% endif %}
             </div>
-
-            <!-- ACTION BUTTONS -->
-            <div class="quick-actions">
-    <a href="{{ url_for('students') }}">📋 View Students</a>
-
-    {% if session.get('role') == 'admin' %}
-        <a href="{{ url_for('add_student') }}">➕ Add Student</a>
-    {% endif %}
-</div>
-
         </div>
+
     </div>
 
 </div>
+<script>
+function toggleDropdown() {
+    const dropdown = document.getElementById("dropdown");
+    dropdown.classList.toggle("hidden");
+}
+
+// close when clicking outside
+window.onclick = function(e) {
+    if (!e.target.closest('.profile')) {
+        document.getElementById("dropdown").classList.add("hidden");
+    }
+}
+</script>
 
 </body>
 </html>
