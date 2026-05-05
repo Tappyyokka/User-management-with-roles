@@ -1,84 +1,41 @@
-# 🚀 Student Management System (Flask + RBAC + REST API)
+# 🚀 Flask User Management System (Deployed)
 
-This project is a **Student Management System** built using **Flask** and **SQLite**, upgraded to a **production-style backend system** as part of my internship (Task 4).
+A full-stack Flask web application with authentication, role-based access control (RBAC), CRUD operations, REST APIs, and live cloud deployment.
 
-It includes **role-based access control (RBAC)**, **admin/user separation**, and **REST API endpoints** for managing data.
+🌐 **Live App:** https://user-management-with-roles.onrender.com
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication
-
-* User Registration & Login
-* Password hashing (Werkzeug)
-* Session-based authentication
-
-### 👑 Role-Based Access Control (RBAC)
-
-* Two roles: **Admin** and **User**
-* Admin → full access
-* User → read-only access
-* Protected routes using decorators
-
-### 📊 Dashboard
-
-* Personalized dashboard
-* Total students count
-* Quick navigation (SaaS-style UI)
-
-### 📋 Student Management (CRUD)
-
-* ➕ Add Students *(Admin only)*
-* 📄 View Students *(All users)*
-* ✏️ Edit Students *(Admin only)*
-* 🗑️ Delete Students *(Admin only)*
-
-### 👑 Admin Panel
-
-* View all users
-* Role visibility (Admin/User)
-
----
-
-## 🌐 REST API
-
-### Endpoints:
-
-| Method | Endpoint             | Access          | Description      |
-| ------ | -------------------- | --------------- | ---------------- |
-| GET    | `/api/students`      | Logged-in users | Get all students |
-| POST   | `/api/students`      | Admin only      | Add student      |
-| PUT    | `/api/students/<id>` | Admin only      | Update student   |
-| DELETE | `/api/students/<id>` | Admin only      | Delete student   |
-
----
-
-## 🔐 Security Features
-
-* Route protection using session-based authentication
-* Admin-only API access for write operations
-* Unauthorized access returns proper HTTP status codes
-* Passwords stored securely using hashing
+* 🔐 User Authentication (Login & Register)
+* 🧑‍💼 Role-Based Access Control (Admin / User)
+* 📊 Student Management (CRUD operations)
+* 🌐 REST API with JSON responses
+* 🎨 Clean modern UI with profile dropdown
+* ☁️ Deployed on cloud (Render)
 
 ---
 
 ## 🛠️ Tech Stack
 
-* Python 🐍
-* Flask 🌐
-* SQLite 🗄️
-* HTML & CSS 🎨
+* **Backend:** Flask (Python)
+* **Frontend:** HTML, CSS
+* **Database:** SQLite
+* **Authentication:** Flask Sessions + Werkzeug
+* **Deployment:** Render
+* **Server:** Gunicorn
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 project/
-│
-├── app.py
-├── database.db (ignored in git)
+│── app.py
+│── database.db
+│── requirements.txt
+│── Procfile
 │
 ├── templates/
 │   ├── login.html
@@ -86,120 +43,63 @@ project/
 │   ├── dashboard.html
 │   ├── students.html
 │   ├── add_student.html
-│   ├── edit_student.html
-│   └── admin.html
+│   └── edit_student.html
 │
 ├── static/
 │   └── style.css
-│
-├── screenshots/
-│   ├── dashboard.png
-│   ├── students.png
-│   ├── admin.png
-│   ├── api-get.png
-│   ├── api-post.png
-│   └── api-security.png
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## ⚙️ Deployment (Render)
 
-1. Clone the repository:
+Steps followed:
 
-```
-git clone https://github.com/your-username/your-repo.git
-```
-
-2. Navigate into project:
-
-```
-cd your-repo
-```
-
-3. Install dependencies:
-
-```
-pip install flask
-```
-
-4. Run the app:
-
-```
-python app.py
-```
-
-5. Open in browser:
-
-```
-http://127.0.0.1:5000
-```
+1. Disabled debug mode
+2. Used environment variable for secret key
+3. Created `requirements.txt`
+4. Added `Procfile` → `web: gunicorn app:app`
+5. Pushed code to GitHub
+6. Connected repo to Render
+7. Deployed successfully 🎉
 
 ---
 
-## 📸 Screenshots
+## 🔒 Security
 
-### 🏠 Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
-### 📋 Students Page
-
-![Students](screenshots/students.png)
-
-### 👑 Admin Panel
-
-![Admin](screenshots/admin.png)
-
-### 🌐 API Testing (GET)
-
-![API GET](screenshots/api-get.png)
-
-### ➕ API Testing (POST)
-
-![API POST](screenshots/api-post.png)
-
-### 🔐 API Security (User Blocked)
-
-![API Security](screenshots/api-security.png)
+* Password hashing (Werkzeug)
+* Session-based authentication
+* Role-based route protection
+* No plain-text passwords
 
 ---
 
-## 🧪 API Testing
+## 🧪 API Endpoints
 
-API endpoints were tested using:
-
-* Postman
-* Thunder Client (VS Code)
-
----
-
-## 📚 What I Learned
-
-* Implementing RBAC (Role-Based Access Control)
-* Securing backend routes and APIs
-* Designing RESTful APIs
-* Managing sessions in Flask
-* Connecting frontend UI with backend logic
+| Method | Endpoint           | Description      |
+| ------ | ------------------ | ---------------- |
+| GET    | /api/students      | Get all students |
+| POST   | /api/students      | Add student      |
+| PUT    | /api/students/<id> | Update student   |
+| DELETE | /api/students/<id> | Delete student   |
 
 ---
 
 ## 🚀 Future Improvements
 
-* 🔍 Search & filter students
-* 📊 Dashboard analytics
-* 📱 Mobile responsive UI
-* 🌙 Dark mode
-* 👥 Role management (change roles from admin panel)
+* Search & pagination
+* Better UI animations
+* Profile settings page
+* PostgreSQL integration
 
 ---
 
-## 🙌 Acknowledgment
+## 👨‍💻 Author
 
-This project was built as part of my internship learning journey.
+**Abhinand M**
 
 ---
 
-## 📬 Connect with me
+## ⭐ Internship Project
 
-Feel free to connect or share feedback!
+Built as part of a Full Stack Web Development Internship, progressing from basic Flask apps to a fully deployed production-ready system.
